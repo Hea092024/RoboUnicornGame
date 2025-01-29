@@ -9,8 +9,12 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
+// Load images
 const unicornImg = new Image();
 unicornImg.src = "./assets/roboRun.png";
+
+const backgroundImg = new Image();
+backgroundImg.src = "./assets/beach.jpg";
 
 unicornImg.onload = () => {
   console.log("Unicorn image loaded successfully");
@@ -20,15 +24,43 @@ unicornImg.onerror = () => {
   console.error("Error loading unicorn image");
 };
 
-const GROUND_OFFSET = 210; // Increased to raise everything higher
-const JUMP_HEIGHT = -20; // Increased jump power
+const GROUND_OFFSET = 210;
+const JUMP_HEIGHT = -20;
+
+class Background {
+  constructor() {
+    this.x = 0;
+    this.y = 0;
+    this.width = canvas.width;
+    this.height = canvas.height;
+    this.speed = 2; // Adjust this value to change background scroll speed
+  }
+
+  update() {
+    this.x -= this.speed;
+    if (this.x <= -this.width) {
+      this.x = 0;
+    }
+  }
+
+  draw() {
+    // Draw two copies of the background for seamless scrolling
+    ctx.drawImage(backgroundImg, this.x, this.y, this.width, this.height);
+    ctx.drawImage(
+      backgroundImg,
+      this.x + this.width,
+      this.y,
+      this.width,
+      this.height
+    );
+  }
+}
 
 class Obstacle {
   constructor() {
     this.width = 50;
     this.height = 70;
     this.x = canvas.width;
-    // Adjusted obstacle position to be at ground level
     this.y = canvas.height - GROUND_OFFSET;
     this.speed = 5;
   }
@@ -60,7 +92,7 @@ class Obstacle {
 class Unicorn {
   constructor() {
     this.x = 50;
-    this.y = canvas.height - GROUND_OFFSET - 30; // Raised horse 30px from ground
+    this.y = canvas.height - GROUND_OFFSET - 30;
     this.width = 100;
     this.height = 80;
     this.velocityY = 0;
@@ -74,7 +106,7 @@ class Unicorn {
     this.spriteHeight = 100;
     this.frameTimer = 0;
     this.frameInterval = 150;
-    this.groundY = canvas.height - GROUND_OFFSET - 30; // Store initial Y position as ground level
+    this.groundY = canvas.height - GROUND_OFFSET - 30;
   }
 
   jump() {
@@ -136,6 +168,7 @@ class Unicorn {
   }
 }
 
+const background = new Background();
 const unicorn = new Unicorn();
 let obstacles = [];
 let lastTime = 0;
@@ -151,6 +184,11 @@ function gameLoop(timestamp) {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  // Update and draw background
+  background.update();
+  background.draw();
+
+  // Draw ground line
   ctx.strokeStyle = "#FFFFFF";
   ctx.beginPath();
   ctx.moveTo(0, canvas.height - GROUND_OFFSET);
