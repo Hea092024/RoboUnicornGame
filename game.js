@@ -55,3 +55,14 @@ document.addEventListener("keydown", (event) => {
 });
 
 update();
+
+const music = document.getElementById("bgMusic");
+
+document.addEventListener("keydown", (event) => {
+  if (event.code === "Space") {
+    unicorn.jump();
+    if (music.paused) {
+      music.play();
+    }
+  }
+});
