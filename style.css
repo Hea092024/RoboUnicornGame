@@ -2,7 +2,24 @@ body {
     margin: 0;
     overflow: hidden;
     background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
+
 canvas {
     display: block;
+}
+
+#startGame {
+    position: absolute;
+    padding: 15px 30px;
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #ff69b4;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    z-index: 10;
 }
